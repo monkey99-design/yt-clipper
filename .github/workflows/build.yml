@@ -1,0 +1,16 @@
+name: build-exe
+on: [workflow_dispatch, push]
+jobs:
+  win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install -r requirements.txt pyinstaller
+      - run: |
+          New-Item -ItemType Directory -Force models | Out-Null
+          curl.exe -L -o models/face_detection_yunet_2023mar.onnx https://github.com/opencv/opencv_zoo/raw/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx
+      - run: pyinstaller --noconfirm --windowed --name YTClipper --collect-all faster_whisper --collect-all ctranslate2 --collect-all imageio_ffmpeg --collect-all yt_dlp --collect-data cv2 --add-data "models;models" app.py
+      - uses: actions/upload-artifact@v4
+        with: { name: YTClipper-windows, path: dist/YTClipper }
