@@ -1,0 +1,6 @@
+yt-dlp
+faster-whisper
+opencv-python-headless
+numpy
+pillow
+imageio-ffmpeg
